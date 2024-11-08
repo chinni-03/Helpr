@@ -8,7 +8,7 @@ export default function SettingsScreen() {
       {/* Profile Section */}
       <View style={styles.profileContainer}>
         <Image
-          source={{ uri: Profile }}
+          source={{ uri: "https://via.placeholder.com/100" }}
           style={styles.profileImage}
         />
         <View>

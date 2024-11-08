@@ -32,7 +32,7 @@ export default function App() {
             component={HomeScreen} 
             options={{ headerShown: false }}
           />
-          <Stack.Screen name="Settings" component={SettingsScreen} />
+          <Stack.Screen name="Settings" component={SettingsScreen} options={{ headerShown: false }} />
         </Stack.Navigator>
       </NavigationContainer>
     </>
