@@ -42,12 +42,16 @@ export default function HomeScreen() {
     );
   }
 
+  const navigateToSettings = () => {
+    navigation.navigate("Settings");
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.nav}>
         <View style={styles.profileContainer}>
           <Image source={Profile} style={styles.profile} />
-          <View>
+          <View onPress={navigateToSettings}>
             <Text style={styles.name}>Harshini</Text>
             <Text style={styles.location}>Current Location</Text>
           </View>
@@ -62,8 +66,6 @@ export default function HomeScreen() {
           region={region}
           onRegionChangeComplete={(newRegion) => setRegion(newRegion)}
           showsUserLocation={true}
-          showsMyLocationButton={true}
-          zoomControlEnabled={true}
           followsUserLocation={true}
         >
           <Marker
