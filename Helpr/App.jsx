@@ -1,9 +1,10 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+
 import SplashScreen from './components/SplashScreenView';
 import { useEffect, useState } from 'react';
 import HomeScreen from './components/HomeScreen';
 import { NativeScreenNavigationContainer, ScreenStack } from 'react-native-screens';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 export default function App() {
 
@@ -12,16 +13,26 @@ export default function App() {
   useEffect(() => {
     setTimeout(() => {
       setShowSplash(false);
-    }, 750)
+    }, 750);
   })
+
+  const Stack = createNativeStackNavigator();
+
+  if (showSplash) {
+    return <SplashScreen />;
+  }
 
   return (
     <>
-      {showSplash ? (
-        <SplashScreen />
-      ): (
-        <HomeScreen />
-      )}
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen 
+            name="Home" 
+            component={HomeScreen} 
+            options={{ headerShown: false }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
     </>
   );
 }
