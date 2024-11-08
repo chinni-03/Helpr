@@ -5,6 +5,7 @@ import HomeScreen from './components/HomeScreen';
 import { NativeScreenNavigationContainer, ScreenStack } from 'react-native-screens';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import SettingsScreen from './components/SettingsScreen';
 
 export default function App() {
 
@@ -31,7 +32,7 @@ export default function App() {
             component={HomeScreen} 
             options={{ headerShown: false }}
           />
-          <Stack.Screen name="Settings" component={Settings} />
+          <Stack.Screen name="Settings" component={SettingsScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </>

@@ -1,14 +1,17 @@
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import Profile from "../assets/me.jpg";
 import Volunteer from "../assets/volunteer.png";
 import React, { useState, useEffect } from "react";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
+import { useNavigation } from "@react-navigation/native";
 
 export default function HomeScreen() {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [region, setRegion] = useState(null);
+
+  const navigation = useNavigation();
 
   useEffect(() => {
     (async () => {
@@ -18,7 +21,6 @@ export default function HomeScreen() {
         return;
       }
 
-      // Start watching the user's location to update in real time
       Location.watchPositionAsync(
         { accuracy: Location.Accuracy.High, distanceInterval: 1 },
         (loc) => {
@@ -49,13 +51,13 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.nav}>
-        <View style={styles.profileContainer}>
+        <TouchableOpacity style={styles.profileContainer} onPress={navigateToSettings}>
           <Image source={Profile} style={styles.profile} />
-          <View onPress={navigateToSettings}>
+          <View>
             <Text style={styles.name}>Harshini</Text>
             <Text style={styles.location}>Current Location</Text>
           </View>
-        </View>
+        </TouchableOpacity>
         <View style={styles.profileContainer}>
           <Image source={Volunteer} style={styles.volunteer} />
         </View>

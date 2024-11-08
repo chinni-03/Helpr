@@ -1,4 +1,5 @@
 import React from "react";
+import Profile from '../assets/me.jpg';
 import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
 
 export default function SettingsScreen() {
@@ -7,7 +8,7 @@ export default function SettingsScreen() {
       {/* Profile Section */}
       <View style={styles.profileContainer}>
         <Image
-          source={{ uri: "https://via.placeholder.com/100" }} // Replace with your profile image URL
+          source={{ uri: Profile }}
           style={styles.profileImage}
         />
         <View>
