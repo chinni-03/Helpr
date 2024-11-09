@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { Image, StyleSheet, Text, View, TouchableOpacity, StatusBar } from "react-native";
 import Profile from "../assets/me.jpg";
 import Volunteer from "../assets/volunteer.png";
 import React, { useState, useEffect } from "react";
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
   },
   sosMain: {
     backgroundColor: "#C70039",
-    padding: 10,
+    padding: 12,
     borderRadius: 28,
   },
   sosText: {

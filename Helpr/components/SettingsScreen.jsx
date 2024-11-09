@@ -1,6 +1,6 @@
 import React from "react";
 import Profile from '../assets/me.jpg';
-import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, Image, TouchableOpacity, StatusBar } from "react-native";
 
 export default function SettingsScreen() {
   return (
@@ -8,7 +8,7 @@ export default function SettingsScreen() {
       {/* Profile Section */}
       <View style={styles.profileContainer}>
         <Image
-          source={{ uri: "https://via.placeholder.com/100" }}
+          source={Profile}
           style={styles.profileImage}
         />
         <View>
@@ -44,8 +44,12 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000", // Black background
-    padding: 20,
+    justifyContent: "space-evenly",
+    alignSelf: "stretch",
+    backgroundColor: "#000",
+    padding: 25,
+    paddingBottom: 10,
+    paddingTop: StatusBar.currentHeight || 20,
   },
   profileContainer: {
     flexDirection: "row",
@@ -55,7 +59,7 @@ const styles = StyleSheet.create({
   profileImage: {
     width: 60,
     height: 60,
-    borderRadius: 30, // Makes it circular
+    borderRadius: 30,
     marginRight: 15,
   },
   name: {
@@ -79,9 +83,13 @@ const styles = StyleSheet.create({
   optionText: {
     color: "#fff",
     fontSize: 16,
+    padding: 5,
+    paddingLeft: 0,
+    paddingRight: 0
   },
   logoutButton: {
     padding: 15,
+    marginBottom: 25,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: "#fff",
