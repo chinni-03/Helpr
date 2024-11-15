@@ -6,6 +6,8 @@ import { NativeScreenNavigationContainer, ScreenStack } from 'react-native-scree
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SettingsScreen from './components/SettingsScreen';
+import LoginScreen from './LoginScreen'; // Replace with the correct file path
+import NewUserScreen from './NewUserScreen'; // Replace with the correct file path
 
 export default function App() {
 
@@ -27,12 +29,22 @@ export default function App() {
     <>
       <NavigationContainer>
         <Stack.Navigator>
-          <Stack.Screen 
-            name="Home" 
+          <Stack.Screen name="Settings" component={SettingsScreen} options={{ headerShown: false }} />
+          <Stack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="NewUser"
+          component={NewUserScreen}
+          options={{ title: 'New User Registration' }}
+        />
+        <Stack.Screen 
+            name="Home"
             component={HomeScreen} 
             options={{ headerShown: false }}
           />
-          <Stack.Screen name="Settings" component={SettingsScreen} options={{ headerShown: false }} />
         </Stack.Navigator>
       </NavigationContainer>
     </>
