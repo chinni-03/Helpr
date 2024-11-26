@@ -11,9 +11,21 @@ export default function PersonalDetails() {
           source={Profile}
           style={styles.profileImage}
         />
-        <View>
-          <Text style={styles.name}>Harshini</Text>
-          <Text style={styles.email}>Email address</Text>
+      </View>
+      <View style={styles.alignCenter}>
+        <Text style={styles.name}>Harshini</Text>
+        <Text style={styles.email}>username</Text>
+      </View>
+      <View style={styles.placeTop}>
+        <Text style={styles.textStyle}>Name: <Text style={styles.lighterText}>Harshini</Text></Text>
+        <Text style={styles.textStyle}>Email Address: <Text style={styles.lighterText}>xxxxxxx</Text></Text>
+        <Text style={styles.textStyle}>Phone Number: <Text style={styles.lighterText}>xxxxxxx</Text></Text>
+        <Text style={styles.textStyle}>Age: <Text style={styles.lighterText}>Female</Text></Text>
+        <Text style={styles.textStyle}>Gender: <Text style={styles.lighterText}>xxxxxxx</Text></Text>
+        <Text style={styles.textStyle}>Address: <Text style={styles.lighterText}>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</Text></Text>
+        <View style={styles.govID}>
+            <Text style={styles.textStyle}>Govt. ID: <Text style={styles.lighterText}>xxxxxxx</Text></Text>
+            <Text style={styles.gov}>Aadhar Card</Text>
         </View>
       </View>
     </View>
@@ -23,8 +35,7 @@ export default function PersonalDetails() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "space-evenly",
-    alignSelf: "stretch",
+    alignContent: 'stretch',
     backgroundColor: "#000",
     padding: 25,
     paddingBottom: 10,
@@ -33,50 +44,50 @@ const styles = StyleSheet.create({
   profileContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 30,
+    justifyContent: 'center',
+    marginBottom: 10,
+    marginTop: 20,
   },
   profileImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    marginRight: 15,
+    width: 128,
+    height: 128,
+    borderRadius: 100,
   },
   name: {
     color: "#fff",
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: "600",
   },
   email: {
     color: "#ccc",
     fontSize: 14,
   },
-  optionsContainer: {
-    flex: 1,
-    marginBottom: 20,
+  alignCenter: {
+    width: '100%',
+    alignItems: 'center',
+    marginBottom: 10, // Adjusted margin to provide spacing between username and personal details
   },
-  option: {
-    borderBottomWidth: 1,
-    borderBottomColor: "#333",
-    paddingVertical: 15,
-  },
-  optionText: {
-    color: "#fff",
+  textStyle: {
+    color: "#ccc",
     fontSize: 16,
-    padding: 5,
-    paddingLeft: 0,
-    paddingRight: 0
+    marginBottom: 14,
+    fontWeight: 500,
   },
-  logoutButton: {
-    padding: 15,
-    marginBottom: 25,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "#fff",
-    alignItems: "center",
+  lighterText: {
+    fontWeight: 400,
+    fontSize: 14,
   },
-  logoutText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "500",
+  placeTop: {
+    marginTop: 20,  // Add margin-top to provide space between username and personal details
   },
+  govID: {
+    flexDirection: 'row',  // Aligns Govt. ID and Aadhar Card horizontally
+    justifyContent: 'space-between',  // Ensures space between elements
+    alignItems: 'center',  // Vertically centers the elements
+  },
+  gov: {
+    color: '#bbb',
+    fontSize: 14,
+    fontWeight: '400', // Optional for styling
+  }
 });

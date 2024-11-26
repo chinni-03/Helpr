@@ -47,8 +47,12 @@ export default function HomeScreen() {
   }
 
   const navigateToSettings = () => {
-    navigation.navigate("Settings");
+    // Delay navigation to avoid triggering it during render
+    setTimeout(() => {
+      navigation.navigate("Settings");
+    }, 0);
   };
+  
 
   const phoneNumber = '9901562607';
 

@@ -7,10 +7,19 @@ export default function SettingsScreen() {
 
   const navigation = useNavigation();
 
+  const navigateTo = (option) => {
+    let formattedTitle = option.replace(/\s+/g, '');
+    navigation.navigate(formattedTitle);
+  }
+
+    const navigateToPersonal = () => {
+      navigation.navigate("PersonalDetails");
+    }
+
   return (
     <View style={styles.container}>
       {/* Profile Section */}
-      <View style={styles.profileContainer}>
+      <TouchableOpacity style={styles.profileContainer} onPress={navigateToPersonal}>
         <Image
           source={Profile}
           style={styles.profileImage}
@@ -19,7 +28,7 @@ export default function SettingsScreen() {
           <Text style={styles.name}>Harshini</Text>
           <Text style={styles.email}>Email address</Text>
         </View>
-      </View>
+      </TouchableOpacity>
 
       {/* Settings Options */}
       <View style={styles.optionsContainer}>
@@ -31,7 +40,7 @@ export default function SettingsScreen() {
           "Parental Controls",
           "Privacy and Policy",
         ].map((option, index) => (
-          <TouchableOpacity key={index} style={styles.option}>
+          <TouchableOpacity key={index} style={styles.option} onPress={() => navigateTo(option)}>
             <Text style={styles.optionText}>{option}</Text>
           </TouchableOpacity>
         ))}
