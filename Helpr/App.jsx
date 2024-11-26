@@ -9,6 +9,11 @@ import SettingsScreen from './components/SettingsScreen';
 import LoginScreen from './components/LoginScreen'; // Replace with the correct file path
 import NewUserScreen from './components/NewUserScreen'; // Replace with the correct file path
 import PersonalDetails from './components/PersonalDetails';
+import PrivacyAndPolicy from './components/PrivacyAndPolicy';
+import ParentalControls from './components/ParentalControls';
+import PaymentsAndSubscription from './components/PaymentsAndSubscription';
+import EmergencyContactDetails from './components/EmergencyContactDetails';
+import VolunteerDetails from './components/VolunteerDetails';
 
 export default function App() {
 
@@ -49,6 +54,31 @@ export default function App() {
           <Stack.Screen
             name="PersonalDetails"
             component={PersonalDetails}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="VolunteerDetails"
+            component={VolunteerDetails}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="EmergencyContactDetails"
+            component={EmergencyContactDetails}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="PaymentsandSubscription"
+            component={PaymentsAndSubscription}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="ParentalControls"
+            component={ParentalControls}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="PrivacyandPolicy"
+            component={PrivacyAndPolicy}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>
