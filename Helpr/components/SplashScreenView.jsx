@@ -1,13 +1,11 @@
 import { Image, StyleSheet, View } from "react-native";
-import Icon from '../assets/icon.png'
-
 
 export default function SplashScreen() {
     return (
-        <View style = {styles.container}>
-            <Image source={Icon} style={styles.image} />
+        <View style={styles.container}>
+            <Image source={require('../assets/icon.png')} style={styles.image} />
         </View>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
@@ -18,6 +16,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#000',
     },
     image: {
-        width: 100, height: 100, resizeMode: "cover"
-    }
+        width: 100,
+        height: 100,
+        resizeMode: "cover",
+    },
 });
