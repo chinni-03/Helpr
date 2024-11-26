@@ -19,7 +19,6 @@ export default function App() {
       setShowSplash(false);
     }, 250);
   })
-
   const Stack = createNativeStackNavigator();
 
   if (showSplash) {

@@ -1,10 +1,11 @@
-import { Image, StyleSheet, Text, View, TouchableOpacity, StatusBar } from "react-native";
+import { Image, StyleSheet, Text, View, TouchableOpacity, StatusBar, Platform, Alert} from "react-native";
 import Profile from "../assets/me.jpg";
 import Volunteer from "../assets/volunteer.png";
 import React, { useState, useEffect } from "react";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import { useNavigation } from "@react-navigation/native";
+import call from 'react-native-phone-call';
 
 export default function HomeScreen() {
   const [location, setLocation] = useState(null);
@@ -16,6 +17,7 @@ export default function HomeScreen() {
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
+      console.log(status)
       if (status !== "granted") {
         setErrorMsg("Permission to access location was denied");
         return;
@@ -46,6 +48,50 @@ export default function HomeScreen() {
 
   const navigateToSettings = () => {
     navigation.navigate("Settings");
+  };
+
+  const phoneNumber = '9901562607';
+
+  const makeEmergencyCall = async () => {
+    try {
+      // Confirm before calling
+      Alert.alert(
+        'Emergency Call',
+        'Initiate emergency call immediately?',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel'
+          },
+          {
+            text: 'Call',
+            onPress: () => {
+              // Direct call configuration
+              const args = {
+                number: phoneNumber, 
+                prompt: false // Attempt to call directly
+              };
+
+              // Attempt to make the call
+              call(args).catch((err) => {
+                console.error('Call failed', err);
+                Alert.alert(
+                  'Call Failed', 
+                  'Unable to make emergency call. Please dial manually.'
+                );
+              });
+            },
+            style: 'destructive'
+          }
+        ]
+      );
+    } catch (error) {
+      console.error('Emergency call setup failed:', error);
+      Alert.alert(
+        'Error', 
+        'Could not initiate emergency call.'
+      );
+    }
   };
 
   return (
@@ -79,9 +125,9 @@ export default function HomeScreen() {
           />
         </MapView>
       </View>
-      <View style={styles.sosMain}>
+      <TouchableOpacity style={styles.sosMain} onPress={makeEmergencyCall}>
         <Text style={[styles.sosText, styles.white]}>SOS</Text>
-      </View>
+      </TouchableOpacity>
     </View>
   );
 }
