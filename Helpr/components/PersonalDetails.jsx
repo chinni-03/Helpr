@@ -1,12 +1,8 @@
 import React from "react";
 import Profile from '../assets/me.jpg';
 import { StyleSheet, View, Text, Image, TouchableOpacity, StatusBar } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 
-export default function SettingsScreen() {
-
-  const navigation = useNavigation();
-
+export default function PersonalDetails() {
   return (
     <View style={styles.container}>
       {/* Profile Section */}
@@ -20,27 +16,6 @@ export default function SettingsScreen() {
           <Text style={styles.email}>Email address</Text>
         </View>
       </View>
-
-      {/* Settings Options */}
-      <View style={styles.optionsContainer}>
-        {[
-          "Personal Details",
-          "Volunteer Details",
-          "Emergency Contact Details",
-          "Payments and Subscription",
-          "Parental Controls",
-          "Privacy and Policy",
-        ].map((option, index) => (
-          <TouchableOpacity key={index} style={styles.option}>
-            <Text style={styles.optionText}>{option}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      {/* Log out Button */}
-      <TouchableOpacity style={styles.logoutButton}>
-        <Text style={styles.logoutText}>Log out</Text>
-      </TouchableOpacity>
     </View>
   );
 }

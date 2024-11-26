@@ -8,6 +8,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SettingsScreen from './components/SettingsScreen';
 import LoginScreen from './components/LoginScreen'; // Replace with the correct file path
 import NewUserScreen from './components/NewUserScreen'; // Replace with the correct file path
+import PersonalDetails from './components/PersonalDetails';
 
 export default function App() {
 
@@ -16,7 +17,7 @@ export default function App() {
   useEffect(() => {
     setTimeout(() => {
       setShowSplash(false);
-    }, 750);
+    }, 250);
   })
 
   const Stack = createNativeStackNavigator();
@@ -29,20 +30,25 @@ export default function App() {
     <>
       <NavigationContainer>
         <Stack.Navigator>
+          <Stack.Screen 
+              name="Home"
+              component={HomeScreen} 
+              options={{ headerShown: false }}
+            />
           <Stack.Screen name="Settings" component={SettingsScreen} options={{ headerShown: false }} />
           <Stack.Screen
-          name="Login"
-          component={LoginScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="NewUser"
-          component={NewUserScreen}
-          options={{ title: 'New User Registration' }}
-        />
-        <Stack.Screen 
-            name="Home"
-            component={HomeScreen} 
+            name="Login"
+            component={LoginScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="NewUser"
+            component={NewUserScreen}
+            options={{ title: 'New User Registration' }}
+          />
+          <Stack.Screen
+            name="PersonalDetails"
+            component={PersonalDetails}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>
