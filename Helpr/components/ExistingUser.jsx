@@ -8,19 +8,25 @@ export default function ExistingUser({navigation}) {
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Welcome back!</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Enter your phone number/email"
-        placeholderTextColor="#aaa"
-        keyboardType="email-address"
-      />
-      
-      <TextInput
-        style={styles.input}
-        placeholder="Enter your password"
-        placeholderTextColor="#aaa"
-        secureTextEntry
-      />
+      <View style={styles.subcontainer}>
+        <Text style={styles.label}>Phone Number/Email</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter your phone number/email"
+          placeholderTextColor="#aaa"
+          keyboardType="email-address"
+        />
+      </View>
+
+      <View style={styles.subcontainer}>
+        <Text style={styles.label}>Password</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter your password"
+          placeholderTextColor="#aaa"
+          secureTextEntry
+        />
+      </View>
 
       <View style={styles.linkContainer}>
         <TouchableOpacity>
@@ -32,13 +38,15 @@ export default function ExistingUser({navigation}) {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={styles.loginButton}>
-        <Text style={styles.loginButtonText}>Log in</Text>
-      </TouchableOpacity>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.loginButton}>
+          <Text style={styles.loginButtonText}>Log in</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity style={styles.newUserButton} onPress={() => navigation.navigate("NewUser")}>
-        <Text style={styles.newUserButtonText}>I'm new here!</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.newUserButton} onPress={() => navigation.navigate("NewUser")}>
+          <Text style={styles.newUserButtonText}>I'm new here!</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 }
@@ -48,7 +56,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000',
     justifyContent: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 50,
+    gap: 20,
   },
   title: {
     color: '#fff',
@@ -57,11 +66,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 40,
   },
+  subcontainer: {
+    gap: 10,
+  },
+  label: {
+    color: '#fff',
+    fontWeight: '500',
+    fontSize: 16,
+  },
   input: {
     color: '#fff',
     borderBottomColor: '#fff', // White bottom border color
     borderBottomWidth: 1,
-    paddingHorizontal: 15,
     paddingVertical: 10,
     fontSize: 16,
     marginBottom: 20,
@@ -72,9 +88,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   link: {
-    color: '#aaa',
+    color: '#fff',
+    opacity: 0.7,
     fontSize: 14,
     textDecorationLine: 'underline'
+  },
+  buttonContainer: {
+    gap: 20
   },
   loginButton: {
     backgroundColor: 'transparent',
@@ -82,7 +102,6 @@ const styles = StyleSheet.create({
     borderWidth: 1, // Added borderWidth to make the border visible
     paddingVertical: 20,
     alignItems: 'center',
-    marginBottom: 20,
   },
   loginButtonText: {
     color: '#fff',

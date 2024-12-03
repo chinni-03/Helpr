@@ -37,8 +37,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   newUserButton: {
-    backgroundColor: '#d3d3d3',
-    borderColor: '#d3d3d3',
+    backgroundColor: '#fff',
+    borderColor: '#fff',
   },
   buttonText: {
     color: '#fff',

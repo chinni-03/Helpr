@@ -14,6 +14,7 @@ import PaymentsAndSubscription from './components/PaymentsAndSubscription';
 import EmergencyContactDetails from './components/EmergencyContactDetails';
 import VolunteerDetails from './components/VolunteerDetails';
 import ExistingUser from './components/ExistingUser';
+import VolunteerConsent from './components/VolunteerConsent';
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -52,6 +53,7 @@ export default function App() {
         />
         <Stack.Screen name="ParentalControls" component={ParentalControls} />
         <Stack.Screen name="PrivacyAndPolicy" component={PrivacyAndPolicy} />
+        <Stack.Screen name="VolunteerConsent" component={VolunteerConsent} />
       </Stack.Navigator>
     </NavigationContainer>
   );
