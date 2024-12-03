@@ -1,4 +1,11 @@
+<<<<<<< HEAD
 import React, { useState } from "react";
+=======
+import React, { useState } from 'react';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../Backend/FirebaseInitialization'; // Adjust the path to your firebase.js
+import * as FileSystem from 'expo-file-system';
+>>>>>>> 2a4591e15b0ff99af3e0526fe8e21576a4ebd275
 import {
   View,
   Text,
@@ -13,6 +20,7 @@ export default function NewUserScreen({ navigation }) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+<<<<<<< HEAD
   const handleProceed = () => {
     if (password !== confirmPassword) {
       alert("Passwords do not match!");
@@ -22,6 +30,63 @@ export default function NewUserScreen({ navigation }) {
     // Navigate back to the login screen
     navigation.navigate("Home");
   };
+=======
+    // Function to handle user registration
+    const handleProceed = async () => {
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+        // Read common passwords from a .txt file
+        const commonPasswords = await readCommonPasswords();
+
+        if (password !== confirmPassword) {
+            alert('Passwords do not match!');
+            return;
+        }
+
+        if (!passwordRegex.test(password)) {
+            alert(
+                'Password must be at least 8 characters long and include:\n' +
+                '- At least one uppercase letter\n' +
+                '- At least one lowercase letter\n' +
+                '- At least one number\n' +
+                '- At least one special character (@, $, !, %, *, ?, &)'
+            );
+            return;
+        }
+
+        if (commonPasswords.includes(password)) {
+            alert('This password is too common. Please choose a stronger, more unique password.');
+            return;
+        }
+
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            alert('Registration Successful');
+            console.log('User created:', userCredential.user);
+            navigation.navigate('Login'); // Navigate back to the login screen
+        } catch (error) {
+            console.error('Error during registration:', error);
+            alert(error.message);
+        }
+    };
+
+    // Function to read common passwords from a .txt file
+    const readCommonPasswords = async () => {
+        try {
+            // Path to the text file in your app's asset directory
+            const fileUri = FileSystem.documentDirectory + '../assets/commonPasswords.txt'; // Adjust the path as needed
+            
+            // Read the file content
+            const fileContents = await FileSystem.readAsStringAsync(fileUri);
+            
+            // Split the file content into an array of passwords
+            return fileContents.split('\n').map(password => password.trim());
+        } catch (error) {
+            console.error('Error reading common passwords file:', error);
+            return [];
+        }
+    };
+>>>>>>> 2a4591e15b0ff99af3e0526fe8e21576a4ebd275
 
   return (
     <View style={styles.container}>
