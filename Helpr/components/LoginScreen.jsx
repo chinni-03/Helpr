@@ -27,14 +27,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#000',
+    gap: 20,
   },
   button: {
     width: '80%',
-    paddingVertical: 15,
-    borderRadius: 5,
+    paddingVertical: 25,
     borderWidth: 1,
     borderColor: '#fff',
-    marginBottom: 20,
     alignItems: 'center',
   },
   newUserButton: {

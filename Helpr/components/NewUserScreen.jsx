@@ -19,7 +19,7 @@ export default function NewUserScreen({ navigation }) {
         }
         alert('Registration Successful');
         // Navigate back to the login screen
-        navigation.navigate('Login');
+        navigation.navigate('Home');
     };
 
     return (
@@ -57,7 +57,7 @@ export default function NewUserScreen({ navigation }) {
 
             <TouchableOpacity
                 style={styles.existingUserButton}
-                onPress={() => navigation.navigate('Login')}
+                onPress={() => navigation.navigate('ExistingUser')}
             >
                 <Text style={styles.existingUserText}>I'm an existing user!</Text>
             </TouchableOpacity>

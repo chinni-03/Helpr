@@ -1,7 +1,9 @@
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 
-export default function LoginScreen() {
+export default function ExistingUser({navigation}) {
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Welcome back!</Text>
@@ -34,7 +36,7 @@ export default function LoginScreen() {
         <Text style={styles.loginButtonText}>Log in</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.newUserButton}>
+      <TouchableOpacity style={styles.newUserButton} onPress={() => navigation.navigate("NewUser")}>
         <Text style={styles.newUserButtonText}>I'm new here!</Text>
       </TouchableOpacity>
     </SafeAreaView>
@@ -56,11 +58,11 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   input: {
-    backgroundColor: '#333',
     color: '#fff',
+    borderBottomColor: '#fff', // White bottom border color
+    borderBottomWidth: 1,
     paddingHorizontal: 15,
     paddingVertical: 10,
-    borderRadius: 5,
     fontSize: 16,
     marginBottom: 20,
   },
@@ -72,28 +74,30 @@ const styles = StyleSheet.create({
   link: {
     color: '#aaa',
     fontSize: 14,
+    textDecorationLine: 'underline'
   },
   loginButton: {
-    backgroundColor: '#fff',
-    paddingVertical: 15,
-    borderRadius: 5,
+    backgroundColor: 'transparent',
+    borderColor: '#fff', // Corrected property name
+    borderWidth: 1, // Added borderWidth to make the border visible
+    paddingVertical: 20,
     alignItems: 'center',
     marginBottom: 20,
   },
   loginButtonText: {
-    color: '#000',
+    color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
   },
   newUserButton: {
-    backgroundColor: '#333',
-    paddingVertical: 15,
-    borderRadius: 5,
+    backgroundColor: '#fff',
+    paddingVertical: 20,
     alignItems: 'center',
   },
   newUserButtonText: {
-    color: '#fff',
+    color: '#000',
     fontSize: 16,
+    fontWeight: 'bold',
   },
 
 });
