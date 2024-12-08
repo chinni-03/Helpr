@@ -20,8 +20,8 @@ export default function PersonalDetails() {
         <Text style={styles.textStyle}>Name: <Text style={styles.lighterText}>Harshini</Text></Text>
         <Text style={styles.textStyle}>Email Address: <Text style={styles.lighterText}>xxxxxxx</Text></Text>
         <Text style={styles.textStyle}>Phone Number: <Text style={styles.lighterText}>xxxxxxx</Text></Text>
-        <Text style={styles.textStyle}>Age: <Text style={styles.lighterText}>Female</Text></Text>
-        <Text style={styles.textStyle}>Gender: <Text style={styles.lighterText}>xxxxxxx</Text></Text>
+        <Text style={styles.textStyle}>Age: <Text style={styles.lighterText}>21</Text></Text>
+        <Text style={styles.textStyle}>Gender: <Text style={styles.lighterText}>Female</Text></Text>
         <Text style={styles.textStyle}>Address: <Text style={styles.lighterText}>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</Text></Text>
         <View style={styles.govID}>
             <Text style={styles.textStyle}>Govt. ID: <Text style={styles.lighterText}>xxxxxxx</Text></Text>

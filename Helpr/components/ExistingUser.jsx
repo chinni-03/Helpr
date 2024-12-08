@@ -39,7 +39,7 @@ export default function ExistingUser({navigation}) {
       </View>
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.loginButton}>
+        <TouchableOpacity style={styles.loginButton} onPress={() => navigation.navigate('Home')}>
           <Text style={styles.loginButtonText}>Log in</Text>
         </TouchableOpacity>
 

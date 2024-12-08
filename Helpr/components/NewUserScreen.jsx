@@ -1,11 +1,7 @@
-<<<<<<< HEAD
-import React, { useState } from "react";
-=======
 import React, { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../Backend/FirebaseInitialization'; // Adjust the path to your firebase.js
 import * as FileSystem from 'expo-file-system';
->>>>>>> 2a4591e15b0ff99af3e0526fe8e21576a4ebd275
 import {
   View,
   Text,
@@ -20,17 +16,6 @@ export default function NewUserScreen({ navigation }) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-<<<<<<< HEAD
-  const handleProceed = () => {
-    if (password !== confirmPassword) {
-      alert("Passwords do not match!");
-      return;
-    }
-    alert("Registration Successful");
-    // Navigate back to the login screen
-    navigation.navigate("Home");
-  };
-=======
     // Function to handle user registration
     const handleProceed = async () => {
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -74,7 +59,7 @@ export default function NewUserScreen({ navigation }) {
     const readCommonPasswords = async () => {
         try {
             // Path to the text file in your app's asset directory
-            const fileUri = FileSystem.documentDirectory + '../assets/commonPasswords.txt'; // Adjust the path as needed
+            const fileUri = FileSystem.documentDirectory + '../assets/CommonPasswords.txt'; // Adjust the path as needed
             
             // Read the file content
             const fileContents = await FileSystem.readAsStringAsync(fileUri);
@@ -86,7 +71,6 @@ export default function NewUserScreen({ navigation }) {
             return [];
         }
     };
->>>>>>> 2a4591e15b0ff99af3e0526fe8e21576a4ebd275
 
   return (
     <View style={styles.container}>
