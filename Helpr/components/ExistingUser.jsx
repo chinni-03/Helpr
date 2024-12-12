@@ -1,8 +1,29 @@
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
+import React, { useState } from 'react';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../Backend/FirebaseInitialization'; // Adjust the path to your Firebase initialization file
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, Alert } from 'react-native';
 
-export default function ExistingUser({navigation}) {
+export default function ExistingUser({ navigation }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Error', 'Please fill in all fields.');
+      return;
+    }
+
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      console.log('Logged in user:', userCredential.user);
+      Alert.alert('Success', 'Login successful!');
+      navigation.navigate('Home'); // Adjust the route name to your home screen
+    } catch (error) {
+      console.error('Login error:', error);
+      Alert.alert('Error', error.message);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -15,6 +36,8 @@ export default function ExistingUser({navigation}) {
           placeholder="Enter your phone number/email"
           placeholderTextColor="#aaa"
           keyboardType="email-address"
+          value={email}
+          onChangeText={setEmail}
         />
       </View>
 
@@ -25,6 +48,8 @@ export default function ExistingUser({navigation}) {
           placeholder="Enter your password"
           placeholderTextColor="#aaa"
           secureTextEntry
+          value={password}
+          onChangeText={setPassword}
         />
       </View>
 
@@ -32,18 +57,18 @@ export default function ExistingUser({navigation}) {
         <TouchableOpacity>
           <Text style={styles.link}>Forgot Password</Text>
         </TouchableOpacity>
-        
+
         <TouchableOpacity>
           <Text style={styles.link}>Login using OTP</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.loginButton} onPress={() => navigation.navigate('Home')}>
+        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
           <Text style={styles.loginButtonText}>Log in</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.newUserButton} onPress={() => navigation.navigate("NewUser")}>
+        <TouchableOpacity style={styles.newUserButton} onPress={() => navigation.navigate('NewUser')}>
           <Text style={styles.newUserButtonText}>I'm new here!</Text>
         </TouchableOpacity>
       </View>
@@ -76,7 +101,7 @@ const styles = StyleSheet.create({
   },
   input: {
     color: '#fff',
-    borderBottomColor: '#fff', // White bottom border color
+    borderBottomColor: '#fff',
     borderBottomWidth: 1,
     paddingVertical: 10,
     fontSize: 16,
@@ -91,15 +116,15 @@ const styles = StyleSheet.create({
     color: '#fff',
     opacity: 0.7,
     fontSize: 14,
-    textDecorationLine: 'underline'
+    textDecorationLine: 'underline',
   },
   buttonContainer: {
-    gap: 20
+    gap: 20,
   },
   loginButton: {
     backgroundColor: 'transparent',
-    borderColor: '#fff', // Corrected property name
-    borderWidth: 1, // Added borderWidth to make the border visible
+    borderColor: '#fff',
+    borderWidth: 1,
     paddingVertical: 20,
     alignItems: 'center',
   },
@@ -118,5 +143,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-
 });

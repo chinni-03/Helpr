@@ -13,6 +13,7 @@
         "NSLocationWhenInUseUsageDescription": "This app requires location access to show your position on the map and send alerts in case of emergencies."
       }
     },
+    "assetBundlePatterns": ["**/*"],
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
@@ -34,12 +35,14 @@
           "locationAlwaysAndWhenInUsePermission": "Allow Helpr to access your location."
         }
       ],
+      
       [
         "expo-dev-client",
         {
           "nativeDevMenu": true
         }
-      ]
+      ],
+      "expo-asset"
     ]
   }
 }
