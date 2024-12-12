@@ -1,12 +1,41 @@
+import React, { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../Backend/FirebaseInitialization'; // Adjust the path to your Firebase initialization file
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, Alert } from 'react-native';
+import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../Backend/FirebaseInitialization'; // Ensure path to Firebase initialization is correct
+import { useDispatch, useSelector } from 'react-redux'; // Redux imports
+import { setUserToken } from '../Backend/authSlice'; // Correct action import from authSlice
+import {
+  SafeAreaView,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+} from 'react-native';
 
-export default function ExistingUser({ navigation }) {
+export default function ExistingUser() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const userToken = useSelector(state => state.auth.userToken); // Get the user token from redux store
+
+  useEffect(() => {
+    // If user is already logged in, navigate to Home screen
+    if (userToken) {
+      navigation.navigate('Home');
+    } else {
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        if (user) {
+          console.log('User is already logged in:', user);
+          dispatch(setUserToken(user.uid)); // Set the user token in Redux
+          navigation.navigate('HomeScreen'); // Redirect to home screen
+        }
+      });
+      return () => unsubscribe();
+    }
+  }, [userToken, navigation, dispatch]);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -17,8 +46,9 @@ export default function ExistingUser({ navigation }) {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log('Logged in user:', userCredential.user);
+      dispatch(setUserToken(userCredential.user.uid)); // Set the user token in Redux
       Alert.alert('Success', 'Login successful!');
-      navigation.navigate('Home'); // Adjust the route name to your home screen
+      navigation.navigate('Home');
     } catch (error) {
       console.error('Login error:', error);
       Alert.alert('Error', error.message);
@@ -68,7 +98,10 @@ export default function ExistingUser({ navigation }) {
           <Text style={styles.loginButtonText}>Log in</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.newUserButton} onPress={() => navigation.navigate('NewUser')}>
+        <TouchableOpacity
+          style={styles.newUserButton}
+          onPress={() => navigation.navigate('NewUser')}
+        >
           <Text style={styles.newUserButtonText}>I'm new here!</Text>
         </TouchableOpacity>
       </View>
