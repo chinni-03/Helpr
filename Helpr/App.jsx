@@ -22,6 +22,9 @@ import EmergencyContactDetails from './components/EmergencyContactDetails';
 import VolunteerDetails from './components/VolunteerDetails';
 import ExistingUser from './components/ExistingUser';
 import VolunteerConsent from './components/VolunteerConsent';
+import ReportZone from './components/ReportZone';
+import SelectZone from './components/SelectZone';
+
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -88,6 +91,8 @@ function App() {
         <Stack.Screen name="ParentalControls" component={ParentalControls} />
         <Stack.Screen name="PrivacyAndPolicy" component={PrivacyAndPolicy} />
         <Stack.Screen name="VolunteerConsent" component={VolunteerConsent} />
+        <Stack.Screen name="ReportZone" component={ReportZone} />
+        <Stack.Screen name="SelectZone" component={SelectZone} />
       </Stack.Navigator>
     </NavigationContainer>
   );
