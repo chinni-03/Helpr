@@ -5,8 +5,6 @@ import { useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { clearUserToken } from "../Backend/authSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { CommonActions } from '@react-navigation/native';
-
 
 export default function SettingsScreen() {
   const navigation = useNavigation();
@@ -25,16 +23,12 @@ export default function SettingsScreen() {
     try {
       await AsyncStorage.removeItem("userToken"); // Clear stored token
       dispatch(clearUserToken()); // Reset Redux state immediately
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: "Login" }], // Reset stack and navigate to Login
-        })
-      );
+      navigation.navigate('Home', { screen: 'Home' }); // Replace the current screen with Login
     } catch (error) {
       console.error("Error during logout:", error);
     }
   };
+  
 
   return (
     <View style={styles.container}>

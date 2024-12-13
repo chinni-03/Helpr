@@ -1,41 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
-import { auth } from '../Backend/FirebaseInitialization'; // Ensure path to Firebase initialization is correct
-import { useDispatch, useSelector } from 'react-redux'; // Redux imports
-import { setUserToken } from '../Backend/authSlice'; // Correct action import from authSlice
-import {
-  SafeAreaView,
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  Alert,
-} from 'react-native';
+import { auth } from '../Backend/FirebaseInitialization';
+import { useDispatch } from 'react-redux';
+import { setUserToken } from '../Backend/authSlice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { SafeAreaView, View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 
 export default function ExistingUser() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const userToken = useSelector(state => state.auth.userToken); // Get the user token from redux store
 
   useEffect(() => {
-    // If user is already logged in, navigate to Home screen
-    if (userToken) {
-      navigation.navigate('Home');
-    } else {
-      const unsubscribe = onAuthStateChanged(auth, (user) => {
-        if (user) {
-          console.log('User is already logged in:', user);
-          dispatch(setUserToken(user.uid)); // Set the user token in Redux
-          navigation.navigate('HomeScreen'); // Redirect to home screen
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const token = await AsyncStorage.getItem("userToken");
+        if (token) {
+          console.log("Token exists, redirecting to Home");
+          navigation.navigate('Home');
+
         }
-      });
-      return () => unsubscribe();
-    }
-  }, [userToken, navigation, dispatch]);
+      }
+    });
+    return () => unsubscribe();
+  }, [navigation]);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -45,10 +35,11 @@ export default function ExistingUser() {
 
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      console.log('Logged in user:', userCredential.user);
-      dispatch(setUserToken(userCredential.user.uid)); // Set the user token in Redux
+      const userToken = userCredential.user.uid;
+      await AsyncStorage.setItem("userToken", userToken);
+      dispatch(setUserToken(userToken));
       Alert.alert('Success', 'Login successful!');
-      navigation.navigate('Home');
+      navigation.navigate('Home', { screen: 'Home' });
     } catch (error) {
       console.error('Login error:', error);
       Alert.alert('Error', error.message);
