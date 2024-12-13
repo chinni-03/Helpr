@@ -1,8 +1,8 @@
-import { Image, StyleSheet, Text, View, TouchableOpacity, StatusBar, Platform, Alert} from "react-native";
+import { Image, StyleSheet, Text, View, TouchableOpacity, StatusBar, Platform, Alert } from "react-native";
 import Profile from "../assets/me.jpg";
 import Volunteer from "../assets/volunteer.png";
 import React, { useState, useEffect } from "react";
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Marker, Circle } from "react-native-maps";
 import * as Location from "expo-location";
 import { useNavigation } from "@react-navigation/native";
 import call from 'react-native-phone-call';
@@ -11,13 +11,14 @@ export default function HomeScreen() {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [region, setRegion] = useState(null);
+  const [zones, setZones] = useState([]);
 
   const navigation = useNavigation();
 
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
-      console.log(status)
+      console.log(status);
       if (status !== "granted") {
         setErrorMsg("Permission to access location was denied");
         return;
@@ -36,6 +37,12 @@ export default function HomeScreen() {
         }
       );
     })();
+
+    // Simulate some zones (replace this with actual data)
+    setZones([
+      { id: 1, latitude: 12.9716, longitude: 77.5946, radius: 1000, type: "danger" }, // Danger zone
+      { id: 2, latitude: 12.9750, longitude: 77.6000, radius: 800, type: "safe" },   // Safe zone
+    ]);
   }, []);
 
   if (!location) {
@@ -47,54 +54,36 @@ export default function HomeScreen() {
   }
 
   const navigateToSettings = () => {
-    // Delay navigation to avoid triggering it during render
     setTimeout(() => {
       navigation.navigate("Settings");
     }, 0);
   };
-  
 
   const phoneNumber = '9901562607';
 
   const makeEmergencyCall = async () => {
     try {
-      // Confirm before calling
       Alert.alert(
         'Emergency Call',
         'Initiate emergency call immediately?',
         [
-          {
-            text: 'Cancel',
-            style: 'cancel'
-          },
-          {
-            text: 'Call',
+          { text: 'Cancel', style: 'cancel' },
+          { 
+            text: 'Call', 
             onPress: () => {
-              // Direct call configuration
-              const args = {
-                number: phoneNumber, 
-                prompt: false // Attempt to call directly
-              };
-
-              // Attempt to make the call
+              const args = { number: phoneNumber, prompt: false };
               call(args).catch((err) => {
                 console.error('Call failed', err);
-                Alert.alert(
-                  'Call Failed', 
-                  'Unable to make emergency call. Please dial manually.'
-                );
+                Alert.alert('Call Failed', 'Unable to make emergency call. Please dial manually.');
               });
             },
-            style: 'destructive'
+            style: 'destructive',
           }
         ]
       );
     } catch (error) {
       console.error('Emergency call setup failed:', error);
-      Alert.alert(
-        'Error', 
-        'Could not initiate emergency call.'
-      );
+      Alert.alert('Error', 'Could not initiate emergency call.');
     }
   };
 
@@ -127,6 +116,20 @@ export default function HomeScreen() {
             }}
             title="You are here"
           />
+          
+          {zones.map((zone) => (
+            <Circle
+              key={zone.id}
+              center={{
+                latitude: zone.latitude,
+                longitude: zone.longitude,
+              }}
+              radius={zone.radius}
+              strokeWidth={2}
+              strokeColor={zone.type === "danger" ? "red" : "green"}
+              fillColor={zone.type === "danger" ? "rgba(255, 0, 0, 0.3)" : "rgba(0, 255, 0, 0.3)"}
+            />
+          ))}
         </MapView>
       </View>
       <TouchableOpacity style={styles.sosMain} onPress={makeEmergencyCall}>
