@@ -22,6 +22,7 @@ const isCircleOverlap = (circle1, circle2, threshold) => {
         circle1.longitude,
         circle2.latitude,
         circle2.longitude
+        
     );
     
     // The sum of the radii (distance between the edges)
