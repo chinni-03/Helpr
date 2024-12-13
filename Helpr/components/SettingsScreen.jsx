@@ -1,29 +1,46 @@
 import React from "react";
 import Profile from '../assets/me.jpg';
 import { StyleSheet, View, Text, Image, TouchableOpacity, StatusBar } from "react-native";
+import { useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
+import { clearUserToken } from "../Backend/authSlice";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { CommonActions } from '@react-navigation/native';
+
 
 export default function SettingsScreen() {
-
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   const navigateTo = (option) => {
-    let formattedTitle = option.replace(/\s+/g, '');
+    const formattedTitle = option.replace(/\s+/g, '');
     navigation.navigate(formattedTitle);
-  }
+  };
 
-    const navigateToPersonal = () => {
-      navigation.navigate("PersonalDetails");
+  const navigateToPersonal = () => {
+    navigation.navigate("PersonalDetails");
+  };
+
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem("userToken"); // Clear stored token
+      dispatch(clearUserToken()); // Reset Redux state immediately
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: "Login" }], // Reset stack and navigate to Login
+        })
+      );
+    } catch (error) {
+      console.error("Error during logout:", error);
     }
+  };
 
   return (
     <View style={styles.container}>
       {/* Profile Section */}
       <TouchableOpacity style={styles.profileContainer} onPress={navigateToPersonal}>
-        <Image
-          source={Profile}
-          style={styles.profileImage}
-        />
+        <Image source={Profile} style={styles.profileImage} />
         <View>
           <Text style={styles.name}>Harshini</Text>
           <Text style={styles.email}>Email address</Text>
@@ -40,14 +57,18 @@ export default function SettingsScreen() {
           "Parental Controls",
           "Privacy and Policy",
         ].map((option, index) => (
-          <TouchableOpacity key={index} style={styles.option} onPress={() => navigateTo(option)}>
+          <TouchableOpacity
+            key={index}
+            style={styles.option}
+            onPress={() => navigateTo(option)}
+          >
             <Text style={styles.optionText}>{option}</Text>
           </TouchableOpacity>
         ))}
       </View>
 
-      {/* Log out Button */}
-      <TouchableOpacity style={styles.logoutButton}>
+      {/* Logout Button */}
+      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <Text style={styles.logoutText}>Log out</Text>
       </TouchableOpacity>
     </View>
@@ -98,7 +119,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     padding: 5,
     paddingLeft: 0,
-    paddingRight: 0
+    paddingRight: 0,
   },
   logoutButton: {
     padding: 15,
