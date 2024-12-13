@@ -1,38 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Animated } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { View, Text, TextInput, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 import { addZoneDataToFirestore } from '../Backend/ZoneService';
-import { useFocusEffect } from '@react-navigation/native'; // To handle screen focus
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function ReportZone() {
   const route = useRoute();
   const navigation = useNavigation();
-  const { location } = route.params; // Getting location from params
-
+  const { location } = route.params;
+  
   const [description, setDescription] = useState('');
-  const [zoneType, setZoneType] = useState('danger'); // Default is 'danger'
+  const [type, setType] = useState('danger'); // Default to 'danger' zone
   const [isLoading, setIsLoading] = useState(false);
-  const opacity = new Animated.Value(0);
 
-  // Fade-in animation when component loads
-  useEffect(() => {
-    Animated.timing(opacity, {
-      toValue: 1,
-      duration: 800,
-      useNativeDriver: true,
-    }).start();
-  }, []);
-
-  // Reset zone type when the screen comes into focus
   useFocusEffect(
     React.useCallback(() => {
-      setZoneType('danger'); // Reset to 'danger' whenever the screen is focused
+      setDescription('');
+      setType('danger'); // Reset when screen comes into focus
     }, [])
   );
 
-  // Handle report submission
   const handleReport = async () => {
-    if (!description) {
+    if (!description.trim()) {
       Alert.alert('Error', 'Please provide a description.');
       return;
     }
@@ -42,15 +31,14 @@ export default function ReportZone() {
       const zone = {
         latitude: location.latitude,
         longitude: location.longitude,
-        type: zoneType,
-        description: description,
+        type: type,
+        description: description.trim(),
       };
-
-      // Add zone to Firestore
       await addZoneDataToFirestore(zone);
       Alert.alert('Success', 'Zone reported successfully!');
-      navigation.goBack(); // Go back to the previous screen after submitting
+      navigation.goBack(); // Go back to the previous screen
     } catch (error) {
+      console.error("Error reporting zone:", error);
       Alert.alert('Error', 'Could not report zone. Please try again.');
     } finally {
       setIsLoading(false);
@@ -58,39 +46,34 @@ export default function ReportZone() {
   };
 
   return (
-    <Animated.View style={[styles.container, { opacity }]}>
+    <View style={styles.container}>
       <Text style={styles.title}>Report a Zone</Text>
 
-      {/* Description Input */}
       <TextInput
         style={styles.input}
         placeholder="Describe the zone"
         value={description}
-        onChangeText={setDescription}
+        onChangeText={setDescription} // Ensure state is updated
         multiline
         placeholderTextColor="#bbb"
       />
 
       <Text style={styles.label}>Select Zone Type</Text>
-
-      {/* Zone Type Buttons */}
       <View style={styles.typeButtons}>
         <TouchableOpacity
-          style={[styles.button, zoneType === 'danger' && styles.dangerButton]}
-          onPress={() => setZoneType('danger')}
+          style={[styles.button, type === 'danger' && styles.dangerButton]}
+          onPress={() => setType('danger')}
         >
           <Text style={styles.buttonText}>Danger Zone</Text>
         </TouchableOpacity>
-
         <TouchableOpacity
-          style={[styles.button, zoneType === 'safe' && styles.safeButton]}
-          onPress={() => setZoneType('safe')}
+          style={[styles.button, type === 'safe' && styles.safeButton]}
+          onPress={() => setType('safe')}
         >
           <Text style={styles.buttonText}>Safe Zone</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Submit Button */}
       <TouchableOpacity
         style={[styles.submitButton, isLoading && styles.disabledButton]}
         onPress={handleReport}
@@ -98,15 +81,15 @@ export default function ReportZone() {
       >
         <Text style={styles.submitButtonText}>{isLoading ? 'Submitting...' : 'Submit'}</Text>
       </TouchableOpacity>
-    </Animated.View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000', // Black background for dark theme
     padding: 20,
+    backgroundColor: '#000', // Black background for dark theme
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -114,18 +97,18 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 20,
-    color: '#fff',
+    color: '#fff', // White text color for dark theme
   },
   input: {
     width: '100%',
     height: 120,
     borderWidth: 1,
-    borderColor: '#444', // Dark border
+    borderColor: '#444', // Dark border for input field
     borderRadius: 10,
     padding: 15,
     fontSize: 16,
-    backgroundColor: '#222', // Dark background
-    color: '#fff',
+    backgroundColor: '#222', // Dark background for input field
+    color: '#fff', // White text color for input field
     marginBottom: 20,
     textAlignVertical: 'top',
   },
@@ -133,7 +116,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '500',
     marginBottom: 10,
-    color: '#fff',
+    color: '#fff', // White text for label
   },
   typeButtons: {
     flexDirection: 'row',
@@ -143,23 +126,23 @@ const styles = StyleSheet.create({
   },
   button: {
     width: '48%',
-    padding: 15,
-    backgroundColor: '#444',
+    padding: 12,
+    backgroundColor: '#444', // Dark button background
     borderRadius: 8,
     alignItems: 'center',
   },
   dangerButton: {
-    backgroundColor: '#ff4d4d', // Red for Danger Zone
+    backgroundColor: '#ff4d4d', // Red button for Danger Zone
   },
   safeButton: {
-    backgroundColor: '#28a745', // Green for Safe Zone
+    backgroundColor: '#28a745', // Green button for Safe Zone
   },
   buttonText: {
     fontSize: 16,
-    color: '#fff',
+    color: '#fff', // White text color for buttons
   },
   submitButton: {
-    backgroundColor: '#28a745', // Green color for submit button
+    backgroundColor: '#28a745', // Green submit button
     paddingVertical: 12,
     paddingHorizontal: 30,
     borderRadius: 28,
@@ -167,11 +150,11 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   disabledButton: {
-    backgroundColor: '#666', // Disabled button style
+    backgroundColor: '#666', // Disabled button color
   },
   submitButtonText: {
     fontSize: 18,
-    color: '#fff',
+    color: '#fff', // White text color for submit button
     fontWeight: 'bold',
   },
 });

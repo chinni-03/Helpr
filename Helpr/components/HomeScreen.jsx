@@ -7,13 +7,15 @@ import * as Location from "expo-location";
 import { useNavigation } from "@react-navigation/native";
 import call from 'react-native-phone-call';
 import { fetchZonesFromFirestore } from "../Backend/ZoneService"; // Import fetch function
+import { mergeOverlappingZones } from '../Backend/ZoneMergeMangement'; // Import the merging function
 
 export default function HomeScreen() {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [region, setRegion] = useState(null); // Region for the map
   const [zones, setZones] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null); // Track selected location
-
+  const [mapInitialized, setMapInitialized] = useState(false); // Track if the map region is set initially
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -24,10 +26,22 @@ export default function HomeScreen() {
         return;
       }
 
+      // Watch user location but set region only once initially
       Location.watchPositionAsync(
         { accuracy: Location.Accuracy.High, distanceInterval: 1 },
         (loc) => {
           setLocation(loc);
+
+          // Set the initial map region only once
+          if (!mapInitialized) {
+            setRegion({
+              latitude: loc.coords.latitude,
+              longitude: loc.coords.longitude,
+              latitudeDelta: 0.005,
+              longitudeDelta: 0.005,
+            });
+            setMapInitialized(true);
+          }
         }
       );
 
@@ -60,8 +74,8 @@ export default function HomeScreen() {
         'Initiate emergency call immediately?',
         [
           { text: 'Cancel', style: 'cancel' },
-          { 
-            text: 'Call', 
+          {
+            text: 'Call',
             onPress: () => {
               const args = { number: phoneNumber, prompt: false };
               call(args).catch((err) => {
@@ -94,6 +108,9 @@ export default function HomeScreen() {
     navigation.navigate("ReportZone", { location: selectedLocation }); // Pass selected location
   };
 
+  // Merge overlapping zones before displaying
+  const mergedZones = mergeOverlappingZones(zones);
+
   return (
     <View style={styles.container}>
       <View style={styles.nav}>
@@ -118,12 +135,10 @@ export default function HomeScreen() {
             longitudeDelta: 0.005,
           }}
           showsUserLocation={true}
-          followsUserLocation={true}
-          onLongPress={handleLongPress} // Long press to select location
-          onPress={handleUnselect} // Tap on map to unselect location
-          onRegionChangeComplete={(newRegion) => {
-            // Optionally track region change if needed
-          }}
+          followsUserLocation={false} // Disable auto-follow to prevent reset
+          rotateEnabled={true} // Allow rotation without resetting to North
+          onLongPress={handleLongPress}
+          onPress={handleUnselect}
         >
           <Marker
             coordinate={{
@@ -132,11 +147,11 @@ export default function HomeScreen() {
             }}
             title="You are here"
           />
-          
-          {/* Render circles for both safe and danger zones */}
-          {zones.map((zone, index) => (
+
+          {/* Render merged zones (both safe and danger zones) */}
+          {mergedZones.map((zone, index) => (
             <Circle
-              key={zone.id || index} // Use zone.id if it's available, else fall back to index
+              key={index} // Use index as the key
               center={{
                 latitude: zone.latitude,
                 longitude: zone.longitude,
@@ -147,7 +162,7 @@ export default function HomeScreen() {
               fillColor={zone.type === "danger" ? "rgba(255, 0, 0, 0.3)" : "rgba(0, 255, 0, 0.3)"}
             />
           ))}
-          
+
           {/* Show selected location as a marker */}
           {selectedLocation && (
             <Marker

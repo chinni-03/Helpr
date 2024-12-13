@@ -1,6 +1,5 @@
-// ZoneService.js
 import { firestore } from '../Backend/FirebaseInitialization'; // Import firestore from FirebaseInitialization.js
-import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
+import { collection, getDocs, addDoc } from 'firebase/firestore'; // Import addDoc
 
 const zonesCollection = collection(firestore, "zones");
 
@@ -18,24 +17,19 @@ export const addZoneDataToFirestore = async (zone) => {
 // Fetch both 'safe' and 'danger' zones from Firestore
 export const fetchZonesFromFirestore = async () => {
   try {
-    const zoneTypes = ["safe", "danger"]; // Ensure valid types
-
-    // Create queries for both "safe" and "danger" zones
-    const queries = zoneTypes.map(type =>
-      query(zonesCollection, where("type", "==", type))
-    );
-
+    const snapshot = await getDocs(zonesCollection);  // Fetch all documents from 'zones' collection
     const allZones = [];
 
-    // Fetch data for both zone types
-    for (const zoneQuery of queries) {
-      const snapshot = await getDocs(zoneQuery);
-      snapshot.forEach((doc) => {
-        allZones.push(doc.data());
-      });
-    }
+    snapshot.forEach((doc) => {
+      const zoneData = doc.data();
+      // Ensure zone data contains a radius and default if not present
+      const radius = zoneData.radius || 100;  // Default radius is 100 meters
 
-    return allZones; // Returns an array containing both safe and danger zones
+      allZones.push({ ...zoneData, radius });
+    });
+
+    // Return all zones (both 'safe' and 'danger')
+    return allZones; 
   } catch (error) {
     console.error("Error fetching zones:", error);
     throw new Error("Error fetching zones from Firestore");
