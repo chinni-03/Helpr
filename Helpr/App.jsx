@@ -27,6 +27,9 @@ import suppressWarnings from './WarningConfig'; // Import the config
 
 // Initialize warning suppression
 suppressWarnings();
+import ReportZone from './components/ReportZone';
+import SelectZone from './components/SelectZone';
+
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -93,6 +96,9 @@ function App() {
         <Stack.Screen name="PaymentsAndSubscription" component={PaymentsAndSubscription} />
         <Stack.Screen name="ParentalControls" component={ParentalControls} />
         <Stack.Screen name="PrivacyAndPolicy" component={PrivacyAndPolicy} />
+        <Stack.Screen name="VolunteerConsent" component={VolunteerConsent} />
+        <Stack.Screen name="ReportZone" component={ReportZone} />
+        <Stack.Screen name="SelectZone" component={SelectZone} />
       </Stack.Navigator>
     </NavigationContainer>
   );

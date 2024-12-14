@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, View, TouchableOpacity, StatusBar, Platform, Alert } from "react-native";
+import { Image, StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
 import Profile from "../assets/me.jpg";
 import Volunteer from "../assets/volunteer.png";
 import React, { useState, useEffect } from "react";
@@ -6,43 +6,49 @@ import MapView, { Marker, Circle } from "react-native-maps";
 import * as Location from "expo-location";
 import { useNavigation } from "@react-navigation/native";
 import call from 'react-native-phone-call';
+import { fetchZonesFromFirestore } from "../Backend/ZoneService"; // Import fetch function
+import { mergeOverlappingZones } from '../Backend/ZoneMergeMangement'; // Import the merging function
 
 export default function HomeScreen() {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
-  const [region, setRegion] = useState(null);
+  const [region, setRegion] = useState(null); // Region for the map
   const [zones, setZones] = useState([]);
-
+  const [selectedLocation, setSelectedLocation] = useState(null); // Track selected location
+  const [mapInitialized, setMapInitialized] = useState(false); // Track if the map region is set initially
   const navigation = useNavigation();
 
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
-      console.log(status);
       if (status !== "granted") {
         setErrorMsg("Permission to access location was denied");
         return;
       }
 
+      // Watch user location but set region only once initially
       Location.watchPositionAsync(
         { accuracy: Location.Accuracy.High, distanceInterval: 1 },
         (loc) => {
           setLocation(loc);
-          setRegion({
-            latitude: loc.coords.latitude,
-            longitude: loc.coords.longitude,
-            latitudeDelta: 0.005,
-            longitudeDelta: 0.005,
-          });
+
+          // Set the initial map region only once
+          if (!mapInitialized) {
+            setRegion({
+              latitude: loc.coords.latitude,
+              longitude: loc.coords.longitude,
+              latitudeDelta: 0.005,
+              longitudeDelta: 0.005,
+            });
+            setMapInitialized(true);
+          }
         }
       );
-    })();
 
-    // Simulate some zones (replace this with actual data)
-    setZones([
-      { id: 1, latitude: 12.9716, longitude: 77.5946, radius: 1000, type: "danger" }, // Danger zone
-      { id: 2, latitude: 12.9750, longitude: 77.6000, radius: 800, type: "safe" },   // Safe zone
-    ]);
+      // Fetch zones from Firestore
+      const fetchedZones = await fetchZonesFromFirestore(); // Fetch zones dynamically from Firestore
+      setZones(fetchedZones);
+    })();
   }, []);
 
   if (!location) {
@@ -68,8 +74,8 @@ export default function HomeScreen() {
         'Initiate emergency call immediately?',
         [
           { text: 'Cancel', style: 'cancel' },
-          { 
-            text: 'Call', 
+          {
+            text: 'Call',
             onPress: () => {
               const args = { number: phoneNumber, prompt: false };
               call(args).catch((err) => {
@@ -86,6 +92,24 @@ export default function HomeScreen() {
       Alert.alert('Error', 'Could not initiate emergency call.');
     }
   };
+
+  // Handle long press to select location
+  const handleLongPress = (e) => {
+    const { latitude, longitude } = e.nativeEvent.coordinate;
+    setSelectedLocation({ latitude, longitude });
+  };
+
+  // Handle tapping on the selected marker or map to unselect
+  const handleUnselect = () => {
+    setSelectedLocation(null); // Unselect the location
+  };
+
+  const navigateToReportZone = () => {
+    navigation.navigate("ReportZone", { location: selectedLocation }); // Pass selected location
+  };
+
+  // Merge overlapping zones before displaying
+  const mergedZones = mergeOverlappingZones(zones);
 
   return (
     <View style={styles.container}>
@@ -104,10 +128,17 @@ export default function HomeScreen() {
       <View style={styles.map}>
         <MapView
           style={styles.mapInside}
-          region={region}
-          onRegionChangeComplete={(newRegion) => setRegion(newRegion)}
+          initialRegion={{
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+            latitudeDelta: 0.005,
+            longitudeDelta: 0.005,
+          }}
           showsUserLocation={true}
-          followsUserLocation={true}
+          followsUserLocation={false} // Disable auto-follow to prevent reset
+          rotateEnabled={true} // Allow rotation without resetting to North
+          onLongPress={handleLongPress}
+          onPress={handleUnselect}
         >
           <Marker
             coordinate={{
@@ -116,10 +147,11 @@ export default function HomeScreen() {
             }}
             title="You are here"
           />
-          
-          {zones.map((zone) => (
+
+          {/* Render merged zones (both safe and danger zones) */}
+          {mergedZones.map((zone, index) => (
             <Circle
-              key={zone.id}
+              key={index} // Use index as the key
               center={{
                 latitude: zone.latitude,
                 longitude: zone.longitude,
@@ -130,11 +162,27 @@ export default function HomeScreen() {
               fillColor={zone.type === "danger" ? "rgba(255, 0, 0, 0.3)" : "rgba(0, 255, 0, 0.3)"}
             />
           ))}
+
+          {/* Show selected location as a marker */}
+          {selectedLocation && (
+            <Marker
+              coordinate={selectedLocation}
+              title="Selected Location"
+              onPress={handleUnselect} // Tap on selected marker to unselect
+            />
+          )}
         </MapView>
       </View>
       <TouchableOpacity style={styles.sosMain} onPress={makeEmergencyCall}>
         <Text style={[styles.sosText, styles.white]}>SOS</Text>
       </TouchableOpacity>
+
+      {/* Show Report Zone button only when a location is selected */}
+      {selectedLocation && (
+        <TouchableOpacity style={styles.reportZoneButton} onPress={navigateToReportZone}>
+          <Text style={styles.reportZoneText}>Report this Zone</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
@@ -203,5 +251,16 @@ const styles = StyleSheet.create({
   volunteer: {
     width: 48,
     height: 48,
+  },
+  reportZoneButton: {
+    backgroundColor: "#007bff",
+    padding: 12,
+    borderRadius: 28,
+    marginTop: 10,
+  },
+  reportZoneText: {
+    alignSelf: "center",
+    fontSize: 18,
+    color: "#fff",
   },
 });
