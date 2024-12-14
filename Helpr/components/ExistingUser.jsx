@@ -39,7 +39,7 @@ export default function ExistingUser() {
       await AsyncStorage.setItem("userToken", userToken);
       dispatch(setUserToken(userToken));
       Alert.alert('Success', 'Login successful!');
-      navigation.navigate('Home', { screen: 'Home' });
+      navigation.navigate('Home');
     } catch (error) {
       console.error('Login error:', error);
       Alert.alert('Error', error.message);

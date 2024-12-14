@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
-import CheckBox from "@react-native-community/checkbox"; // Import CheckBox from the correct package
+import { CheckBox } from "react-native-elements";
+import { useDispatch } from "react-redux"; // Import the useDispatch hook
+import { setUserToken } from "../Backend/authSlice"; // Import your action from the authSlice
+import { auth } from "../Backend/FirebaseInitialization"; // Make sure this is correctly imported
 
 export default function VolunteerConsent({ navigation }) {
   const [isVolunteer, setIsVolunteer] = useState(false);
+  const dispatch = useDispatch(); // Initialize dispatch
 
   const handleProceed = () => {
     if (isVolunteer) {
@@ -14,7 +18,12 @@ export default function VolunteerConsent({ navigation }) {
     } else {
       Alert.alert("Notice", "You can always opt to volunteer later.");
     }
-    navigation.navigate("Home");
+
+    // Set the user token after proceeding
+    if (auth.currentUser) {
+      dispatch(setUserToken(auth.currentUser.uid)); // Correct dispatch usage
+      navigation.navigate("Home");
+    }
   };
 
   return (
@@ -24,15 +33,15 @@ export default function VolunteerConsent({ navigation }) {
         Would you like to be a volunteer and help others in times of need?
       </Text>
 
-      <View style={styles.checkboxContainer}>
-        <CheckBox
-          value={isVolunteer}
-          onValueChange={setIsVolunteer}
-          tintColors={{ true: "#fff", false: "#888" }} // Customize colors
-          style={styles.checkbox}
-        />
-        <Text style={styles.label}>Yes, I want to volunteer.</Text>
-      </View>
+      <CheckBox
+        title="Yes, I want to volunteer."
+        checked={isVolunteer}
+        onPress={() => setIsVolunteer(!isVolunteer)}
+        containerStyle={styles.checkboxContainer}
+        textStyle={styles.label}
+        checkedColor="#fff"
+        uncheckedColor="#888"
+      />
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.proceedButton} onPress={handleProceed}>
@@ -73,18 +82,17 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   checkboxContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  checkbox: {
-    marginRight: 10,
+    backgroundColor: "transparent",
+    borderWidth: 0,
+    margin: 0,
+    padding: 0,
   },
   label: {
     color: "#fff",
     fontSize: 16,
   },
   buttonContainer: {
+    marginTop: 20,
     gap: 20,
   },
   proceedButton: {

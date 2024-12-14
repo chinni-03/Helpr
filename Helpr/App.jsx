@@ -4,10 +4,11 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useDispatch, useSelector } from 'react-redux';
 import { onAuthStateChanged } from 'firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { setUserToken } from './Backend/authSlice';
 import { auth } from './Backend/FirebaseInitialization';
-import { store } from './Backend/store'; // Import your store
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { store } from './Backend/store';
 
 import SplashScreen from './components/SplashScreenView';
 import HomeScreen from './components/HomeScreen';
@@ -22,47 +23,48 @@ import EmergencyContactDetails from './components/EmergencyContactDetails';
 import VolunteerDetails from './components/VolunteerDetails';
 import ExistingUser from './components/ExistingUser';
 import VolunteerConsent from './components/VolunteerConsent';
+import suppressWarnings from './WarningConfig'; // Import the config
+
+// Initialize warning suppression
+suppressWarnings();
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
   const [loading, setLoading] = useState(true);
-  const userToken = useSelector((state) => state.auth.userToken); // Get userToken from Redux
+  const userToken = useSelector((state) => state.auth.userToken); // Redux state
   const dispatch = useDispatch();
 
+  const Stack = createNativeStackNavigator();
+
   useEffect(() => {
-    const checkToken = async () => {
+    const initializeAuth = async () => {
+      // Check for a stored token
       const storedToken = await AsyncStorage.getItem('userToken');
       if (storedToken) {
-        dispatch(setUserToken(storedToken)); // Set the token if available
+        dispatch(setUserToken(storedToken));
       }
       setLoading(false);
+
+      // Set up Firebase auth listener
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        if (user) {
+          dispatch(setUserToken(user.uid));
+        } else {
+          dispatch(setUserToken(null));
+        }
+      });
+
+      return () => unsubscribe();
     };
 
-    checkToken();
+    const hideSplashScreen = setTimeout(() => setShowSplash(false), 250);
 
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        dispatch(setUserToken(user.uid)); // Set the token if user is logged in
-      } else {
-        dispatch(setUserToken(null)); // Clear token if user is not logged in
-      }
-    });
+    initializeAuth();
 
-    const timer = setTimeout(() => {
-      setShowSplash(false);
-    }, 250);
-
-    return () => {
-      unsubscribe();
-      clearTimeout(timer);
-    };
+    return () => clearTimeout(hideSplashScreen);
   }, [dispatch]);
 
-  if (loading) {
-    return null; // Show a loading screen while determining the token
-  }
-
-  const Stack = createNativeStackNavigator();
+  if (loading) return null; // Render nothing while determining auth state
 
   if (showSplash) {
     return <SplashScreen />;
@@ -72,22 +74,25 @@ function App() {
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {userToken ? (
+          // Authenticated stack
           <Stack.Screen name="Home" component={HomeScreen} />
         ) : (
+          // Unauthenticated stack
           <>
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="ExistingUser" component={ExistingUser} />
+            <Stack.Screen name="NewUser" component={NewUserScreen} />
           </>
         )}
+        {/* Shared screens */}
         <Stack.Screen name="Settings" component={SettingsScreen} />
-        <Stack.Screen name="NewUser" component={NewUserScreen} />
+        <Stack.Screen name="VolunteerConsent" component={VolunteerConsent} />
         <Stack.Screen name="PersonalDetails" component={PersonalDetails} />
         <Stack.Screen name="VolunteerDetails" component={VolunteerDetails} />
         <Stack.Screen name="EmergencyContactDetails" component={EmergencyContactDetails} />
         <Stack.Screen name="PaymentsAndSubscription" component={PaymentsAndSubscription} />
         <Stack.Screen name="ParentalControls" component={ParentalControls} />
         <Stack.Screen name="PrivacyAndPolicy" component={PrivacyAndPolicy} />
-        <Stack.Screen name="VolunteerConsent" component={VolunteerConsent} />
       </Stack.Navigator>
     </NavigationContainer>
   );

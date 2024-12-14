@@ -23,7 +23,12 @@ export default function SettingsScreen() {
     try {
       await AsyncStorage.removeItem("userToken"); // Clear stored token
       dispatch(clearUserToken()); // Reset Redux state immediately
-      navigation.navigate('Home', { screen: 'Home' }); // Replace the current screen with Login
+  
+      // Reset navigation stack and navigate to the Login screen
+      navigation.reset({
+        index: 0, // Reset to the first screen
+        routes: [{ name: 'Login' }], // Navigate to the 'Login' screen
+      });
     } catch (error) {
       console.error("Error during logout:", error);
     }

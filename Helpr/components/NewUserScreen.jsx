@@ -48,7 +48,7 @@ export default function NewUserScreen({ navigation }) {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             alert('Registration Successful');
             console.log('User created:', userCredential.user);
-            navigation.navigate('Login'); // Navigate back to the login screen
+            navigation.navigate('VolunteerConsent'); // Navigate back to the login screen
         } catch (error) {
             console.error('Error during registration:', error);
             alert(error.message);
