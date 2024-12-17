@@ -21,18 +21,21 @@ export default function SettingsScreen() {
 
   const handleLogout = async () => {
     try {
-      await AsyncStorage.removeItem("userToken"); // Clear stored token
-      dispatch(clearUserToken()); // Reset Redux state immediately
+      // Clear stored token and dispatch Redux action in parallel
+      await Promise.all([
+        AsyncStorage.removeItem("userToken"),
+        dispatch(clearUserToken())
+      ]);
   
       // Reset navigation stack and navigate to the Login screen
       navigation.reset({
         index: 0, // Reset to the first screen
-        routes: [{ name: 'Login' }], // Navigate to the 'Login' screen
+        routes: [{ name: "Login" }], // Navigate to the 'Login' screen
       });
     } catch (error) {
       console.error("Error during logout:", error);
     }
-  };
+  };  
   
 
   return (
@@ -67,7 +70,7 @@ export default function SettingsScreen() {
       </View>
 
       {/* Logout Button */}
-      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+      <TouchableOpacity style={styles.logoutButton} onPress={() => handleLogout()}>
         <Text style={styles.logoutText}>Log out</Text>
       </TouchableOpacity>
     </View>

@@ -89,7 +89,6 @@ function App() {
         )}
         {/* Shared screens */}
         <Stack.Screen name="Settings" component={SettingsScreen} />
-        <Stack.Screen name="VolunteerConsent" component={VolunteerConsent} />
         <Stack.Screen name="PersonalDetails" component={PersonalDetails} />
         <Stack.Screen name="VolunteerDetails" component={VolunteerDetails} />
         <Stack.Screen name="EmergencyContactDetails" component={EmergencyContactDetails} />
